@@ -30,15 +30,41 @@ import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Route
 @PWA(name = "App", shortName = "App")
 public class WEB extends VerticalLayout {
 
-    private static final String API = "http://localhost:9090/%s";
+    private static final String API = "http://localhost:9091/%s";
     HttpRequest request;
     HttpClient cliente = HttpClient.newBuilder().build();
     HttpResponse<String> response;
+
+    private void IniciamosUsers(){
+        String resource = String.format(API, "iniciarid");
+        System.out.println(resource);
+
+
+        try{
+            request = HttpRequest.newBuilder(new URI(resource)).GET().build();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
+        try{
+            response = cliente.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println(response.body());
+
+        return;
+
+    }
 
     private String Getusers(){
         String resource = String.format(API, "Getusers");
@@ -91,6 +117,33 @@ public class WEB extends VerticalLayout {
 
         return response.body();
 
+    }
+
+    private String editaruser(User userEditado){
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+        String string = gson.toJson(userEditado, User.class);
+
+        String resource = String.format(API, "editarUser");
+        System.out.println("User editado en el gson: \n"+string);
+
+        try{
+            request = HttpRequest.newBuilder(new URI(resource)).header("Content-Type", "application/json").PUT(HttpRequest.BodyPublishers.ofString(string)).build();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
+        try{
+            response = cliente.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println(response.body());
+
+        return response.body();
     }
 
     private String Getprest(){
@@ -174,6 +227,7 @@ public class WEB extends VerticalLayout {
     public WEB(){
         /////////////////////////////USUARIOS//////////////////////////////////
         //Recibir los usuarios
+        IniciamosUsers();
         String usersST = Getusers();
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         ArrayList<User> users;
@@ -195,6 +249,7 @@ public class WEB extends VerticalLayout {
         HorizontalLayout usersHLayout = new HorizontalLayout();
 
         //Definicion de los textfield
+        AtomicInteger id_user = new AtomicInteger();
         TextField nombre = new TextField("Nombre");
         TextField departamento = new TextField("Departamento");
         TextField telefono = new TextField("Telefono");
@@ -215,6 +270,7 @@ public class WEB extends VerticalLayout {
 
         //Control de interacciones
         gridUsers.addItemClickListener(e->{
+            id_user.set(e.getItem().getId());
             nombre.clear();
             departamento.clear();
             telefono.clear();
@@ -248,6 +304,12 @@ public class WEB extends VerticalLayout {
 
         edit.addClickListener(e->{
            usersDIV.remove(usersVLayout);
+
+            User userEditado = new User(id_user.get(), nombre.getValue(), departamento.getValue(), telefono.getValue(), email.getValue(), ubicacion.getValue());
+
+            editaruser(userEditado);
+
+            UI.getCurrent().getPage().reload();
         });
 
         borrar.addClickListener(e->{
@@ -276,6 +338,7 @@ public class WEB extends VerticalLayout {
         //Tabla de los usuarios
         Tab prestTAB = new Tab("Prestamos");
         Div prestDIV = new Div();
+        prestDIV.setVisible(false);
 
         //Definicion del grid de users
         Grid<Prestamo> gridPrest = new Grid<>(Prestamo.class);
@@ -368,6 +431,7 @@ public class WEB extends VerticalLayout {
         //Tabla de los usuarios
         Tab equiTAB = new Tab("Equipos");
         Div equiDIV = new Div();
+        equiDIV.setVisible(false);
 
         //Definicion del grid de users
         Grid<Equipo> gridEqui = new Grid<>(Equipo.class);
@@ -400,21 +464,31 @@ public class WEB extends VerticalLayout {
         TextField software_libre = new TextField("software_libre");
         TextField software_libre_v = new TextField("software_libre_v");
 
+        gridEqui.addItemClickListener(e->{
+            tipo.setValue(e.getItem().getTipo());
+            marca.setValue(e.getItem().getMarca());
+            uso.setValue(e.getItem().getUso());
+            so_nombre.setValue(e.getItem().getSo_nombre());
+            so_version.setValue(e.getItem().getSo_version());
+            procesador.setValue(e.getItem().getProcesador());
+            ram.setValue(String.valueOf(e.getItem().getRam()));
+            ram_speed.setValue(String.valueOf(e.getItem().getRam_speed()));
+            tipo_disco.setValue(e.getItem().getTipo_disco());
+            diagonal.setValue(String.valueOf(e.getItem().getDiagonal()));
+            resolucion.setValue(e.getItem().getResolucion());
+            software_pago.setValue(e.getItem().getSoftware_pago());
+            software_pago_v.setValue(e.getItem().getSoftware_pago_v());
+            software_pago_t.setValue(e.getItem().getSoftware_pago_t());
+            software_libre.setValue(e.getItem().getSoftware_libre());
+            software_libre_v.setValue(e.getItem().getSoftware_libre_v());
+        });
+
         //Definicion del diseño de los layout y divs
         equiVLayout.add(equiHLayout);
         equiHLayout.add(tipo, marca, uso, so_nombre, so_version, procesador, ram, ram_speed, tipo_disco, capacidad, diagonal,
                 resolucion, software_pago, software_pago_v, software_pago_t, software_libre, software_libre_v);
         equiDIV.add(gridEqui);
 
-        /*gridEqui.addItemClickListener(e->{  //REVISAR
-            iduser.setValue();
-            idequipo.clear();
-            fechaIni.clear();
-            fechaFin.clear();
-            fechaReal.clear();
-            comen.clear();
-            prestDIV.add(prestVLayout);
-        });*/
 
    ////////////////////////////////////////////////////////////////
         Map<Tab, Component> tabsToPages = new HashMap<>();
