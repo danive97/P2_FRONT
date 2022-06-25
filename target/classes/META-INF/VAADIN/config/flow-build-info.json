@@ -1,9 +1,9 @@
 {
   "compatibilityMode": false,
   "productionMode": false,
-  "npmFolder": "C:\\Users\\Daniel Ojeda\\Desktop\\3ºINFOR-CIBER\\21-22\\1ºCuatrimestre\\DIS(6)\\P2 - copia\\frontend",
-  "generatedFolder": "C:\\Users\\Daniel Ojeda\\Desktop\\3ºINFOR-CIBER\\21-22\\1ºCuatrimestre\\DIS(6)\\P2 - copia\\frontend\\target\\frontend",
-  "frontendFolder": "C:\\Users\\Daniel Ojeda\\Desktop\\3ºINFOR-CIBER\\21-22\\1ºCuatrimestre\\DIS(6)\\P2 - copia\\frontend\\frontend",
+  "npmFolder": "C:\\Users\\Daniel Ojeda\\Desktop\\3ºINFOR-CIBER\\21-22\\1ºCuatrimestre\\DIS(6)\\P2\\frontend",
+  "generatedFolder": "C:\\Users\\Daniel Ojeda\\Desktop\\3ºINFOR-CIBER\\21-22\\1ºCuatrimestre\\DIS(6)\\P2\\frontend\\target\\frontend",
+  "frontendFolder": "C:\\Users\\Daniel Ojeda\\Desktop\\3ºINFOR-CIBER\\21-22\\1ºCuatrimestre\\DIS(6)\\P2\\frontend\\frontend",
   "pnpm.enable": false,
   "require.home.node": false
 }
