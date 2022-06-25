@@ -3,8 +3,10 @@ package org.example;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
@@ -16,6 +18,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.TextField;
 
+import com.vaadin.flow.server.StreamResource;
 import org.example.APIREST.Equipo;
 import org.example.APIREST.Prestamo;
 import org.example.APIREST.User;
@@ -304,6 +307,8 @@ public class WEB extends VerticalLayout {
 
         edit.addClickListener(e->{
            usersDIV.remove(usersVLayout);
+           ////ELEMENTO AÑADIDO//////
+
 
             User userEditado = new User(id_user.get(), nombre.getValue(), departamento.getValue(), telefono.getValue(), email.getValue(), ubicacion.getValue());
 
@@ -363,7 +368,6 @@ public class WEB extends VerticalLayout {
         Button acep_2_2 = new Button("Aceptar_2");
         Button nuevo_2 = new Button("Nuevo Prestamo");
         Button edit_2 = new Button("Editar Prestamo");
-
 
         //Definicion del diseño de los layout y divs
         prestVLayout.add(prestHLayout, nuevo_2);
@@ -464,6 +468,7 @@ public class WEB extends VerticalLayout {
         TextField software_libre = new TextField("software_libre");
         TextField software_libre_v = new TextField("software_libre_v");
 
+
         gridEqui.addItemClickListener(e->{
             tipo.setValue(e.getItem().getTipo());
             marca.setValue(e.getItem().getMarca());
@@ -493,11 +498,18 @@ public class WEB extends VerticalLayout {
    ////////////////////////////////////////////////////////////////
         Map<Tab, Component> tabsToPages = new HashMap<>();
         tabsToPages.put(usersTAB, usersDIV);
-        tabsToPages.put(prestTAB, prestDIV);
         tabsToPages.put(equiTAB, equiDIV);
-        Tabs tabs = new Tabs(usersTAB, prestTAB, equiTAB);
+        tabsToPages.put(prestTAB, prestDIV);
+
+        StreamResource imageResource = new StreamResource("ufv.png",
+                () -> getClass().getResourceAsStream("/ufv.png"));
+
+        Image image = new Image(imageResource, "My Streamed Image");
+        add(image);
+
+        Tabs tabs = new Tabs(usersTAB, equiTAB, prestTAB);
         tabs.setSizeFull();
-        Div pages = new Div(usersDIV, prestDIV, equiDIV);
+        Div pages = new Div(usersDIV, equiDIV, prestDIV);
         pages.setSizeFull();
 
 
